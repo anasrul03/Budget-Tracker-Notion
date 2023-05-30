@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:budget_tracker/failure_model.dart';
@@ -16,6 +17,7 @@ class BudgetRepo {
   }
 
   Future<List<Item>> getItems() async {
+    log(dotenv.env['NOTION_DATABASE_ID'].toString());
     try {
       final url =
           '${baseUrl}databases/${dotenv.env['NOTION_DATABASE_ID']}/query';
@@ -23,7 +25,7 @@ class BudgetRepo {
         Uri.parse(url),
         headers: {
           HttpHeaders.authorizationHeader:
-              'Authorization: Bearer ${dotenv.env['NOTION_API_KEY']}',
+              'Bearer ${dotenv.env['NOTION_API_KEY']}',
           'Notion-Version': '2022-06-28',
         },
       );
@@ -36,6 +38,7 @@ class BudgetRepo {
         throw const Failure(message: 'Something went wrong!');
       }
     } catch (e) {
+      log(e.toString());
       throw const Failure(message: 'Something went wrong!');
     }
   }
